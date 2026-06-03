@@ -33,3 +33,28 @@ public:
         return out;
     }
 
+private:
+    const std::string& s;
+    size_t pos = 0;
+    int line = 1;
+
+    char peek() { return pos < s.size() ? s[pos] : '\0'; }
+    char advance() { char c = s[pos++]; if (c == '\n') line++; return c; }
+
+    void skipWhitespaceAndComments() {
+        for (;;) {
+            while (pos < s.size() && std::isspace((unsigned char)peek())) advance();
+            if (peek() == '/' && pos + 1 < s.size() && s[pos+1] == '/') {
+                while (pos < s.size() && peek() != '\n') advance();
+                continue;
+            }
+            if (peek() == '/' && pos + 1 < s.size() && s[pos+1] == '*') {
+                advance(); advance();
+                while (pos < s.size() && !(peek() == '*' && pos+1 < s.size() && s[pos+1] == '/')) advance();
+                if (pos < s.size()) { advance(); advance(); }
+                continue;
+            }
+            break;
+        }
+    }
+
