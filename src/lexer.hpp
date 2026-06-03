@@ -19,3 +19,17 @@ struct Token {
 };
 
 // Turns a full source string into a vector of tokens (one pass, no lookback).
+class Lexer {
+public:
+    explicit Lexer(const std::string& src) : s(src) {}
+
+    std::vector<Token> tokenize() {
+        std::vector<Token> out;
+        while (true) {
+            Token t = next();
+            out.push_back(t);
+            if (t.type == Tok::END) break;
+        }
+        return out;
+    }
+
