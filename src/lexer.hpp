@@ -12,3 +12,10 @@ enum class Tok {
     PLUS, MINUS, AMP, PIPE, CARET, TILDE
 };
 
+struct Token {
+    Tok type;
+    std::string text;   // raw text (identifier name, number literal, etc.)
+    int line;
+};
+
+// Turns a full source string into a vector of tokens (one pass, no lookback).
