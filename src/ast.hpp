@@ -43,3 +43,9 @@ inline ExprPtr makeUnOp(UnOp op, ExprPtr o) {
 }
 
 // ---- Statements ----
+struct Assign {
+    std::string target;   // left-hand side signal name
+    ExprPtr expr;         // right-hand side expression tree
+};
+
+enum class SigKind { WIRE, REG, INPUT, OUTPUT };
