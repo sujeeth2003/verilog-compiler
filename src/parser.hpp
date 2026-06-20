@@ -80,3 +80,22 @@ private:
         }
     }
 
+    void parseDecl(Module& m, SigKind kind) {
+        advance(); // consume the keyword
+        m.decls.push_back({kind, expect(Tok::IDENT, "expected signal name").text});
+        while (check(Tok::COMMA)) {
+            advance();
+            m.decls.push_back({kind, expect(Tok::IDENT, "expected signal name").text});
+        }
+        expect(Tok::SEMI, "expected ';' after declaration");
+    }
+
+    void parseAssign(Module& m) {
+        advance(); // consume 'assign'
+        std::string target = expect(Tok::IDENT, "expected target signal").text;
+        expect(Tok::EQUALS, "expected '=' in assign");
+        ExprPtr e = parseExpr();
+        expect(Tok::SEMI, "expected ';' after assign");
+        m.assigns.push_back({target, e});
+    }
+
