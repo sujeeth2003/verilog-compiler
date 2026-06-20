@@ -22,3 +22,20 @@ struct Gate {
     long constVal = 0;    // only used for CONST
 };
 
+class NetlistEmitter {
+public:
+    std::vector<Gate> emit(const Module& m) {
+        gates.clear();
+        tempCount = 0;
+        for (auto& a : m.assigns) {
+            std::string resultNet = emitExpr(a.expr);
+            // final BUF ties the computed temp net to the real target signal
+            gates.push_back({GateOp::BUF, a.target, resultNet, "", 0});
+        }
+        return gates;
+    }
+
+private:
+    std::vector<Gate> gates;
+    int tempCount = 0;
+
