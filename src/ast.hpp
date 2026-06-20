@@ -29,3 +29,9 @@ struct Expr {
 
 using ExprPtr = std::shared_ptr<Expr>;
 
+inline ExprPtr makeIdent(const std::string& n) {
+    auto e = std::make_shared<Expr>(); e->kind = ExprKind::IDENT; e->name = n; return e;
+}
+inline ExprPtr makeNumber(long v) {
+    auto e = std::make_shared<Expr>(); e->kind = ExprKind::NUMBER; e->value = v; return e;
+}
