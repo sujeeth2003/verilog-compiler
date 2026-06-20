@@ -55,3 +55,28 @@ private:
         return advance();
     }
 
+    // ---- top-level grammar ----
+    std::vector<std::string> parsePortList() {
+        std::vector<std::string> ports;
+        if (check(Tok::RPAREN)) return ports; // empty port list
+        ports.push_back(expect(Tok::IDENT, "expected port name").text);
+        while (check(Tok::COMMA)) {
+            advance();
+            ports.push_back(expect(Tok::IDENT, "expected port name").text);
+        }
+        return ports;
+    }
+
+    void parseItem(Module& m) {
+        switch (peek().type) {
+            case Tok::KW_WIRE:   parseDecl(m, SigKind::WIRE);   return;
+            case Tok::KW_REG:    parseDecl(m, SigKind::REG);    return;
+            case Tok::KW_INPUT:  parseDecl(m, SigKind::INPUT);  return;
+            case Tok::KW_OUTPUT: parseDecl(m, SigKind::OUTPUT); return;
+            case Tok::KW_ASSIGN: parseAssign(m);                return;
+            default:
+                throw std::runtime_error("Parse error line " + std::to_string(peek().line) +
+                                          ": unexpected token '" + peek().text + "' in module body");
+        }
+    }
+
