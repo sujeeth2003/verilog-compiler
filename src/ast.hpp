@@ -35,3 +35,11 @@ inline ExprPtr makeIdent(const std::string& n) {
 inline ExprPtr makeNumber(long v) {
     auto e = std::make_shared<Expr>(); e->kind = ExprKind::NUMBER; e->value = v; return e;
 }
+inline ExprPtr makeBinOp(BinOp op, ExprPtr l, ExprPtr r) {
+    auto e = std::make_shared<Expr>(); e->kind = ExprKind::BINOP; e->bop = op; e->lhs = l; e->rhs = r; return e;
+}
+inline ExprPtr makeUnOp(UnOp op, ExprPtr o) {
+    auto e = std::make_shared<Expr>(); e->kind = ExprKind::UNOP; e->uop = op; e->operand = o; return e;
+}
+
+// ---- Statements ----
