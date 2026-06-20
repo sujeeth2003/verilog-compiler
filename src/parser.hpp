@@ -99,3 +99,35 @@ private:
         m.assigns.push_back({target, e});
     }
 
+    // ---- expression grammar, lowest to highest precedence ----
+    ExprPtr parseExpr()  { return parseOr(); }
+
+    ExprPtr parseOr() {
+        ExprPtr lhs = parseXor();
+        while (check(Tok::PIPE)) { advance(); lhs = makeBinOp(BinOp::OR, lhs, parseXor()); }
+        return lhs;
+    }
+    ExprPtr parseXor() {
+        ExprPtr lhs = parseAnd();
+        while (check(Tok::CARET)) { advance(); lhs = makeBinOp(BinOp::XOR, lhs, parseAnd()); }
+        return lhs;
+    }
+    ExprPtr parseAnd() {
+        ExprPtr lhs = parseAdd();
+        while (check(Tok::AMP)) { advance(); lhs = makeBinOp(BinOp::AND, lhs, parseAdd()); }
+        return lhs;
+    }
+    ExprPtr parseAdd() {
+        ExprPtr lhs = parseUnary();
+        while (check(Tok::PLUS) || check(Tok::MINUS)) {
+            BinOp op = check(Tok::PLUS) ? BinOp::ADD : BinOp::SUB;
+            advance();
+            lhs = makeBinOp(op, lhs, parseUnary());
+        }
+        return lhs;
+    }
+    ExprPtr parseUnary() {
+        if (check(Tok::TILDE)) { advance(); return makeUnOp(UnOp::NOT, parseUnary()); }
+        return parsePrimary();
+    }
+    ExprPtr parsePrimary() {
