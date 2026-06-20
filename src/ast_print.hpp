@@ -24,3 +24,22 @@ inline void printExpr(const ExprPtr& e) {
     }
 }
 
+inline void printModule(const Module& m) {
+    std::cout << "module " << m.name << "(";
+    for (size_t i = 0; i < m.ports.size(); i++)
+        std::cout << (i ? ", " : "") << m.ports[i];
+    std::cout << ")\n";
+
+    for (auto& d : m.decls) {
+        const char* k = d.kind == SigKind::WIRE ? "wire" :
+                         d.kind == SigKind::REG  ? "reg"  :
+                         d.kind == SigKind::INPUT ? "input" : "output";
+        std::cout << "  decl " << k << " " << d.name << "\n";
+    }
+    for (auto& a : m.assigns) {
+        std::cout << "  assign " << a.target << " = ";
+        printExpr(a.expr);
+        std::cout << "\n";
+    }
+    std::cout << "endmodule\n";
+}
