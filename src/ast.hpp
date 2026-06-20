@@ -55,3 +55,9 @@ struct SignalDecl {
 };
 
 // ---- Module ----
+struct Module {
+    std::string name;
+    std::vector<std::string> ports;      // port list from module header
+    std::vector<SignalDecl> decls;       // wire/reg/input/output declarations
+    std::vector<Assign> assigns;         // assign statements
+};
