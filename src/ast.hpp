@@ -49,3 +49,9 @@ struct Assign {
 };
 
 enum class SigKind { WIRE, REG, INPUT, OUTPUT };
+struct SignalDecl {
+    SigKind kind;
+    std::string name;
+};
+
+// ---- Module ----
