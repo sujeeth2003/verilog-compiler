@@ -22,3 +22,10 @@ struct Expr {
     BinOp bop{};
     std::shared_ptr<Expr> lhs, rhs;
 
+    // UNOP
+    UnOp uop{};
+    std::shared_ptr<Expr> operand;
+};
+
+using ExprPtr = std::shared_ptr<Expr>;
+
