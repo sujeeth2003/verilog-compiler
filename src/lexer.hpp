@@ -83,3 +83,30 @@ private:
             return {Tok::IDENT, id, line};
         }
 
+        if (std::isdigit((unsigned char)c)) {
+            std::string num;
+            while (pos < s.size() && (std::isalnum((unsigned char)peek()) || peek() == '\''))
+                num += advance(); // grabs things like 4'b1010 too, kept as raw text for now
+            return {Tok::NUMBER, num, line};
+        }
+
+        switch (c) {
+            case '(': return makeSingle(Tok::LPAREN);
+            case ')': return makeSingle(Tok::RPAREN);
+            case '[': return makeSingle(Tok::LBRACK);
+            case ']': return makeSingle(Tok::RBRACK);
+            case ';': return makeSingle(Tok::SEMI);
+            case ',': return makeSingle(Tok::COMMA);
+            case '=': return makeSingle(Tok::EQUALS);
+            case '+': return makeSingle(Tok::PLUS);
+            case '-': return makeSingle(Tok::MINUS);
+            case '&': return makeSingle(Tok::AMP);
+            case '|': return makeSingle(Tok::PIPE);
+            case '^': return makeSingle(Tok::CARET);
+            case '~': return makeSingle(Tok::TILDE);
+        }
+
+        throw std::runtime_error("Lexer: unexpected character '" + std::string(1, c) +
+                                  "' at line " + std::to_string(line));
+    }
+};
