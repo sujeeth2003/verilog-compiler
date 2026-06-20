@@ -58,3 +58,28 @@ private:
         }
     }
 
+    Token makeSingle(Tok type) {
+        Token t{type, std::string(1, advance()), line};
+        return t;
+    }
+
+    Token next() {
+        skipWhitespaceAndComments();
+        if (pos >= s.size()) return Token{Tok::END, "", line};
+
+        char c = peek();
+
+        if (std::isalpha((unsigned char)c) || c == '_') {
+            std::string id;
+            while (pos < s.size() && (std::isalnum((unsigned char)peek()) || peek() == '_'))
+                id += advance();
+            if (id == "module") return {Tok::KW_MODULE, id, line};
+            if (id == "endmodule") return {Tok::KW_ENDMODULE, id, line};
+            if (id == "wire") return {Tok::KW_WIRE, id, line};
+            if (id == "reg") return {Tok::KW_REG, id, line};
+            if (id == "input") return {Tok::KW_INPUT, id, line};
+            if (id == "output") return {Tok::KW_OUTPUT, id, line};
+            if (id == "assign") return {Tok::KW_ASSIGN, id, line};
+            return {Tok::IDENT, id, line};
+        }
+
