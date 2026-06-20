@@ -131,3 +131,26 @@ private:
         return parsePrimary();
     }
     ExprPtr parsePrimary() {
+        if (check(Tok::IDENT))  return makeIdent(advance().text);
+        if (check(Tok::NUMBER)) return makeNumber(parseNumberLiteral(advance().text));
+        if (check(Tok::LPAREN)) {
+            advance();
+            ExprPtr e = parseExpr();
+            expect(Tok::RPAREN, "expected ')'");
+            return e;
+        }
+        throw std::runtime_error("Parse error line " + std::to_string(peek().line) +
+                                  ": expected expression, got '" + peek().text + "'");
+    }
+
+    // Handles plain decimal ("42") and a simplified Verilog literal ("4'b1010", "8'hFF").
+    long parseNumberLiteral(const std::string& raw) {
+        auto tick = raw.find('\'');
+        if (tick == std::string::npos)
+            return std::stol(raw);
+        std::string digits = raw.substr(tick + 2); // skip "'b" / "'h" / "'d"
+        char base = raw[tick + 1];
+        int radix = (base == 'b') ? 2 : (base == 'h') ? 16 : 10;
+        return std::stol(digits, nullptr, radix);
+    }
+};
