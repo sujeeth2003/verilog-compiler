@@ -36,3 +36,22 @@ public:
         while (!check(Tok::KW_ENDMODULE))
             parseItem(m);
 
+        expect(Tok::KW_ENDMODULE, "expected 'endmodule'");
+        return m;
+    }
+
+private:
+    std::vector<Token> t;
+    size_t pos = 0;
+
+    // ---- token stream helpers ----
+    const Token& peek() { return t[pos]; }
+    bool check(Tok k) { return peek().type == k; }
+    const Token& advance() { return t[pos++]; }
+    const Token& expect(Tok k, const std::string& msg) {
+        if (!check(k))
+            throw std::runtime_error("Parse error line " + std::to_string(peek().line) +
+                                      ": " + msg + " (got '" + peek().text + "')");
+        return advance();
+    }
+
