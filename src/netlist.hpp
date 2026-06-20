@@ -12,3 +12,13 @@
 #include <map>
 #include <set>
 
+enum class GateOp { AND, OR, XOR, NOT, ADD, SUB, BUF, CONST };
+
+struct Gate {
+    GateOp op;
+    std::string out;
+    std::string in1;
+    std::string in2;      // unused for NOT/BUF/CONST
+    long constVal = 0;    // only used for CONST
+};
+
