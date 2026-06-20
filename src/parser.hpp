@@ -20,3 +20,19 @@
 #include "ast.hpp"
 #include <stdexcept>
 
+class Parser {
+public:
+    explicit Parser(std::vector<Token> toks) : t(std::move(toks)) {}
+
+    Module parseModule() {
+        Module m;
+        expect(Tok::KW_MODULE, "expected 'module'");
+        m.name = expect(Tok::IDENT, "expected module name").text;
+        expect(Tok::LPAREN, "expected '(' after module name");
+        m.ports = parsePortList();
+        expect(Tok::RPAREN, "expected ')' after port list");
+        expect(Tok::SEMI, "expected ';' after module header");
+
+        while (!check(Tok::KW_ENDMODULE))
+            parseItem(m);
+
