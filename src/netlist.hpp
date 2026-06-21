@@ -124,3 +124,27 @@ inline void printGraphviz(const Module& m, const std::vector<Gate>& gates, std::
         return inputs.count(n) ? "in_" + n : "g_" + n;
     };
 
+    os << "digraph \"" << m.name << "\" {\n  rankdir=LR;\n  node [fontname=\"Helvetica\"];\n";
+    for (auto& i : inputs)
+        os << "  \"in_" << i << "\" [label=\"" << i << "\", shape=box, style=filled, fillcolor=\"#c8e6c9\"];\n";
+    for (auto& o : outputs)
+        os << "  \"out_" << o << "\" [label=\"" << o << "\", shape=box, style=filled, fillcolor=\"#bbdefb\"];\n";
+    for (auto& g : gates) {
+        if (isTie(g)) continue;
+        os << "  \"g_" << g.out << "\" [label=\"" << gateName(g.op);
+        if (g.op == GateOp::CONST) os << "\\n" << g.constVal;
+        os << "\", shape=ellipse];\n";
+    }
+    for (auto& g : gates) {
+        if (isTie(g)) continue;
+        for (const std::string& in : {g.in1, g.in2}) {
+            if (in.empty()) continue;
+            os << "  \"" << producer(in) << "\" -> \"g_" << g.out << "\" [label=\"" << in << "\"];\n";
+        }
+    }
+    for (auto& g : gates) {       // connect each output port to whatever computes it
+        if (!isTie(g) || !outputs.count(g.out)) continue;
+        os << "  \"" << producer(g.in1) << "\" -> \"out_" << g.out << "\" [label=\"" << g.out << "\"];\n";
+    }
+    os << "}\n";
+}
