@@ -39,3 +39,35 @@ private:
     std::vector<Gate> gates;
     int tempCount = 0;
 
+    std::string freshTemp() { return "_t" + std::to_string(tempCount++); }
+
+    // Recursively lowers an expression tree, returning the net name that
+    // holds its result. This is the classic "emit and return a handle"
+    // pattern used in almost every real code generator.
+    std::string emitExpr(const ExprPtr& e) {
+        switch (e->kind) {
+            case ExprKind::IDENT:
+                return e->name; // already a net, no gate needed
+
+            case ExprKind::NUMBER: {
+                std::string t = freshTemp();
+                gates.push_back({GateOp::CONST, t, "", "", e->value});
+                return t;
+            }
+            case ExprKind::UNOP: {
+                std::string in = emitExpr(e->operand);
+                std::string t = freshTemp();
+                gates.push_back({GateOp::NOT, t, in, "", 0});
+                return t;
+            }
+            case ExprKind::BINOP: {
+                std::string l = emitExpr(e->lhs);
+                std::string r = emitExpr(e->rhs);
+                std::string t = freshTemp();
+                GateOp op = e->bop == BinOp::AND ? GateOp::AND :
+                            e->bop == BinOp::OR  ? GateOp::OR  :
+                            e->bop == BinOp::XOR ? GateOp::XOR :
+                            e->bop == BinOp::ADD ? GateOp::ADD : GateOp::SUB;
+                gates.push_back({op, t, l, r, 0});
+                return t;
+            }
