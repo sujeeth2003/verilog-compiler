@@ -104,3 +104,23 @@ inline const char* gateName(GateOp op) {
     return "?";
 }
 
+inline void printGraphviz(const Module& m, const std::vector<Gate>& gates, std::ostream& os) {
+    std::set<std::string> inputs, outputs;
+    for (auto& d : m.decls) {
+        if (d.kind == SigKind::INPUT) inputs.insert(d.name);
+        if (d.kind == SigKind::OUTPUT) outputs.insert(d.name);
+    }
+    // A BUF whose target is a named signal just ties a computed temp to that name: draw it as a wire.
+    auto isTie = [](const Gate& g) { return g.op == GateOp::BUF && !g.out.empty() && g.out[0] != '_'; };
+    // Map every named signal driven by a tie to the temp that actually computes it.
+    std::map<std::string, std::string> alias;
+    for (auto& g : gates) if (isTie(g)) alias[g.out] = g.in1;
+    auto resolve = [&](std::string net) {
+        while (alias.count(net) && alias[net] != net) net = alias[net];
+        return net;
+    };
+    auto producer = [&](const std::string& net) {
+        std::string n = resolve(net);
+        return inputs.count(n) ? "in_" + n : "g_" + n;
+    };
+
