@@ -71,3 +71,23 @@ private:
                 gates.push_back({op, t, l, r, 0});
                 return t;
             }
+        }
+        return ""; // unreachable
+    }
+};
+
+inline void printNetlist(const std::vector<Gate>& gates) {
+    for (auto& g : gates) {
+        switch (g.op) {
+            case GateOp::AND:  std::cout << g.out << " = AND(" << g.in1 << ", " << g.in2 << ")\n"; break;
+            case GateOp::OR:   std::cout << g.out << " = OR("  << g.in1 << ", " << g.in2 << ")\n"; break;
+            case GateOp::XOR:  std::cout << g.out << " = XOR(" << g.in1 << ", " << g.in2 << ")\n"; break;
+            case GateOp::ADD:  std::cout << g.out << " = ADD(" << g.in1 << ", " << g.in2 << ")\n"; break;
+            case GateOp::SUB:  std::cout << g.out << " = SUB(" << g.in1 << ", " << g.in2 << ")\n"; break;
+            case GateOp::NOT:  std::cout << g.out << " = NOT(" << g.in1 << ")\n"; break;
+            case GateOp::BUF:  std::cout << g.out << " = BUF(" << g.in1 << ")\n"; break;
+            case GateOp::CONST:std::cout << g.out << " = CONST(" << g.constVal << ")\n"; break;
+        }
+    }
+}
+
