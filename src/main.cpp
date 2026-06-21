@@ -12,3 +12,11 @@
 #include <sstream>
 #include <iostream>
 
+static std::string readFile(const std::string& path) {
+    std::ifstream in(path);
+    if (!in) throw std::runtime_error("Cannot open file: " + path);
+    std::ostringstream ss;
+    ss << in.rdbuf();
+    return ss.str();
+}
+
