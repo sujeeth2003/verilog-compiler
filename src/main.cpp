@@ -36,3 +36,18 @@ int main(int argc, char** argv) {
     try {
         std::string src = readFile(path);
 
+        Lexer lexer(src);
+        auto tokens = lexer.tokenize();
+
+        Parser parser(tokens);
+        Module mod = parser.parseModule();
+
+        if (showAst && !dot) {
+            std::cout << "=== AST ===\n";
+            printModule(mod);
+            std::cout << "\n";
+        }
+
+        NetlistEmitter emitter;
+        auto gates = emitter.emit(mod);
+
