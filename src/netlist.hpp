@@ -91,3 +91,16 @@ inline void printNetlist(const std::vector<Gate>& gates) {
     }
 }
 
+// ---- Graphviz schematic output --------------------------------------------
+// `vcomp file.v --dot > out.dot && dot -Tpng out.dot -o out.png`
+// Inputs are green boxes, outputs blue boxes, each gate an ellipse, every connection an edge from
+// the driver to the consumer labelled with the net name.
+inline const char* gateName(GateOp op) {
+    switch (op) {
+        case GateOp::AND: return "AND"; case GateOp::OR: return "OR"; case GateOp::XOR: return "XOR";
+        case GateOp::NOT: return "NOT"; case GateOp::ADD: return "ADD"; case GateOp::SUB: return "SUB";
+        case GateOp::BUF: return "BUF"; case GateOp::CONST: return "CONST";
+    }
+    return "?";
+}
+
