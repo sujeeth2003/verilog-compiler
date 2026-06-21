@@ -20,3 +20,19 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <file.v> [--ast] [--dot]\n";
+        return 1;
+    }
+    std::string path = argv[1];
+    bool showAst = false, dot = false;
+    for (int i = 2; i < argc; ++i) {
+        std::string a = argv[i];
+        if (a == "--ast") showAst = true; else if (a == "--dot") dot = true;
+        else { std::cerr << "vcomp: unknown option " << a << "\n"; return 1; }
+    }
+
+    try {
+        std::string src = readFile(path);
+
