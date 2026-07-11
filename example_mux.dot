@@ -1,0 +1,20 @@
+digraph "mux2" {
+  rankdir=LR;
+  node [fontname="Helvetica"];
+  "in_a" [label="a", shape=box, style=filled, fillcolor="#c8e6c9"];
+  "in_b" [label="b", shape=box, style=filled, fillcolor="#c8e6c9"];
+  "in_sel" [label="sel", shape=box, style=filled, fillcolor="#c8e6c9"];
+  "out_y" [label="y", shape=box, style=filled, fillcolor="#bbdefb"];
+  "g__t0" [label="NOT", shape=ellipse];
+  "g__t1" [label="AND", shape=ellipse];
+  "g__t2" [label="AND", shape=ellipse];
+  "g__t3" [label="OR", shape=ellipse];
+  "in_sel" -> "g__t0" [label="sel"];
+  "in_a" -> "g__t1" [label="a"];
+  "g__t0" -> "g__t1" [label="n_sel"];
+  "in_b" -> "g__t2" [label="b"];
+  "in_sel" -> "g__t2" [label="sel"];
+  "g__t1" -> "g__t3" [label="_t1"];
+  "g__t2" -> "g__t3" [label="_t2"];
+  "g__t3" -> "out_y" [label="y"];
+}
