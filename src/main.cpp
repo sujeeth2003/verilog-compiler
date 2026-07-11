@@ -51,3 +51,16 @@ int main(int argc, char** argv) {
         NetlistEmitter emitter;
         auto gates = emitter.emit(mod);
 
+        if (dot) {
+            printGraphviz(mod, gates, std::cout);
+        } else {
+            std::cout << "=== Netlist for module " << mod.name << " ===\n";
+            printNetlist(gates);
+        }
+
+    } catch (std::exception& e) {
+        std::cerr << "vcomp: error: " << e.what() << "\n";
+        return 1;
+    }
+    return 0;
+}
