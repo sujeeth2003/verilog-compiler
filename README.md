@@ -14,3 +14,9 @@ Run:
 4. `ast_print.hpp`  — debug printer for the AST
 5. `netlist.hpp`    — AST -> flat gate-level netlist (the "codegen" phase)
 
+## Supported subset
+- `module NAME(ports...); ... endmodule`
+- `input`, `output`, `wire`, `reg` declarations
+- `assign target = expr;`
+- Operators: `& | ^ ~ + -`, parentheses, decimal and `N'bXXXX` / `N'hXX` literals
+
