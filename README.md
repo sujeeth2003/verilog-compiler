@@ -20,3 +20,13 @@ Run:
 - `assign target = expr;`
 - Operators: `& | ^ ~ + -`, parentheses, decimal and `N'bXXXX` / `N'hXX` literals
 
+## Where to extend next
+- Add `always @(...)` blocks -> needs a statement AST + simple scheduler
+- Add bit-width tracking ([7:0] etc.) -> extend SignalDecl with a width field
+- Add multi-bit constant folding / optimization pass over the netlist
+- Emit real Verilog/BLIF/structural output instead of the text netlist
+- Add a symbol table pass between parsing and netlist emission to catch
+  undeclared signals (currently the emitter trusts names blindly)
+
+## Error messages
+Syntax errors report the source line, e.g. `vcomp: error: Parse error line 1: expected ')' after port list (got ';')`.
